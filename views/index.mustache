@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mystery Word</title>
+  </head>
+  <body>
+    <h1>Mystery Word</h1>
+    <div class="guessesCount">
+      <p>You have 8 guesses left.</p>
+      <p>You are out of guesses.</p>
+    </div>
+    <div class="mysteryWord">
+      <p>_ U _ K _ _ U</p>
+    </div>
+    <div class="gamePlay">
+      <form class="guessContainer" action="/index" method="post">
+        <input type="text" name="guessInput" value="">
+        <input type="submit" name="guessSubmit" value="Make a guess">
+      </form>
+      <p>You lose!</p>
+      <input type="submit" name="try-again" value="Do you want to play again?">
+      <p>Letters guess: None</p>
+    </div>
+  </body>
+</html>
