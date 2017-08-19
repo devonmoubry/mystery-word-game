@@ -45,6 +45,21 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+// Middleware function with no mount path. This code runs before every request.
+app.use(function (req, res, next) {
+  console.log('\n---------------------------');
+  console.log('Request URL:', req.originalUrl);
+
+  initializeSessionIfEmpty(req.session);
+
+  console.log('Session object before request:', req.session);
+
+  console.log('---------------------------');
+
+  // Pass control to the next middleware function. Otherwise, the request will be left hanging.
+  next();
+});
+
 // Function that checks to see if the session object is in its default state,
 // which looks like this if you have never been to the website before:
 //
@@ -67,8 +82,6 @@ function initializeSessionIfEmpty(session) {
 }
 
 app.get('/', (req, res) => {
-  initializeSessionIfEmpty(req.session);
-
   // store new word in a session
   req.session.newWord = getRandomWord(easyWords);
   // // count number of characters in word
