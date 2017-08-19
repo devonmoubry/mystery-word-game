@@ -5,24 +5,65 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mystery Word</title>
+    <style>
+      .errors-container {
+        color: red;
+      }
+    </style>
   </head>
-  <body>
-    <h1>Mystery Word</h1>
-    <div class="guessesCount">
-      <p>You have 8 guesses left.</p>
-      <p>You are out of guesses.</p>
+  <body style="margin: 0 20px;">
+    <h1>{{title}}</h1>
+    <div style="margin:20px 0;" class="mysteryWord">
+      {{#newWord}}
+        <span>_</span>
+      {{/newWord}}
     </div>
-    <div class="mysteryWord">
-      <p>_ U _ K _ _ U</p>
-    </div>
-    <div class="gamePlay">
-      <form class="guessContainer" action="/index" method="post">
-        <input type="text" name="guessInput" value="">
-        <input type="submit" name="guessSubmit" value="Make a guess">
-      </form>
-      <p>You lose!</p>
-      <input type="submit" name="try-again" value="Do you want to play again?">
-      <p>Letters guess: None</p>
+    {{#gamePlay}}
+      <div class="guessesCount">
+        {{#moreGuesses}}
+          <span>You have {{guessesCount}} guesses left.</span>
+        {{/moreGuesses}}
+
+        {{^moreGuesses}}
+          <span>You are out of guesses.</span>
+        {{/moreGuesses}}
+
+        <p>Guesses: {{#guessedLetters}}<span>{{.}}</span>{{/guessedLetters}}</p>
+      </div>
+      <div class="gamePlay">
+        <form class="guessContainer" action="/guess" method="post">
+          <input type="text" name="guessInput" value="">
+          <input type="submit" name="guessSubmit" value="Make a guess">
+        </form>
+
+        {{#errors.length}}
+          <div class="errors-container">
+            <h3>Errors</h3>
+            <ul>
+              {{#errors}}
+                <li>
+                  <!-- {{param}} -->
+                  {{msg}}
+                  {{#value}}
+                    (You entered {{value}}.)
+                  {{/value}}
+                </li>
+              {{/errors}}
+            </ul>
+          </div>
+        {{/errors.length}}
+
+        {{^errors.length}}<p>cool.cool.cool</p>{{/errors.length}}
+      {{/gamePlay}}
+
+      {{^gamePlay}}
+        {{#win}}<p>You win!</p>{{/win}}
+        {{^win}}<p>You lose!</p>{{/win}}
+
+        <form class="playAgain" action="/index" method="post">
+            <input type="submit" name="play-again" value="Do you want to play again?">
+        </form>
+      {{/gamePlay}}
     </div>
   </body>
 </html>
