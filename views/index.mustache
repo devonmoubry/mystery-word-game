@@ -65,14 +65,18 @@
           </div>
         {{/errors.length}}
 
-        {{^errors.length}}<p>cool.cool.cool</p>{{/errors.length}}
+        {{^errors.length}}<p>cool. cool. cool</p>{{/errors.length}}
+
+        <form class="reset" action="/reset" method="post">
+            <input type="submit" name="reset" value="Reset">
+        </form>
       {{/gamePlay}}
 
       {{^gamePlay}}
         {{#win}}<p>You win!</p>{{/win}}
         {{^win}}<p>You lose!</p>{{/win}}
 
-        <form class="playAgain" action="/index" method="post">
+        <form class="playAgain" action="/reset" method="post">
             <input type="submit" name="play-again" value="Do you want to play again?">
         </form>
       {{/gamePlay}}
