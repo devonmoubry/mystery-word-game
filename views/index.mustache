@@ -14,14 +14,21 @@
   <body style="margin: 0 20px;">
     <h1>{{title}}</h1>
     <div style="margin:20px 0;" class="mysteryWord">
-        {{#newWord}}
-          {{#guessed}}
+      {{#newWord}}
+        {{#guessed}}
           <span>{{letter}}</span>
-          {{/guessed}}
-          {{^guessed}}
+        {{/guessed}}
+        {{^guessed}}
+        {{#gamePlay}}
           <span>_</span>
-          {{/guessed}}
-        {{/newWord}}
+        {{/gamePlay}}
+        {{^gamePlay}}
+          {{^win}}
+            <span style="color: red;">{{letter}}</span>
+          {{/win}}
+        {{/gamePlay}}
+        {{/guessed}}
+      {{/newWord}}
     </div>
     {{#gamePlay}}
       <div class="guessesCount">

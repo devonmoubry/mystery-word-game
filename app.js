@@ -77,8 +77,12 @@ app.use(function (req, res, next) {
 function initializeSessionIfEmpty(session) {
   if (Object.keys(session).length === 1) {
     console.log('Initializing session state.');
-    Object.assign(session, initialSessionState);
+    initializeSession(session);
   }
+}
+
+function initializeSession(session) {
+  Object.assign(session, initialSessionState);
 }
 
 app.get('/', (req, res) => {
@@ -120,6 +124,12 @@ app.post('/guess', (req, res) => {
         req.session.badGuesses++;
       }
 
+      if (req.session.easyModeMaxGuesses == req.session.badGuesses) {
+        req.session.moreGuesses = false;
+        req.session.gamePlay = false;
+        req.session.win = false;
+      }
+
     } else {
       // display error messages: input is invalid
       console.log('Validator: Errors: ', util.inspect(errors.array()));
@@ -128,6 +138,11 @@ app.post('/guess', (req, res) => {
     res.render('index', Object.assign({}, req.session, { errors: errors.array() }));
   });
 });
+
+app.post('/reset', (req, res) => {
+  initializeSession(req.session);
+  res.redirect('/');
+})
 
 function initializeWord(word) {
   let lettersArray = [];
