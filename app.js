@@ -143,23 +143,21 @@ app.post('/guess', (req, res) => {
       // display error messages: input is invalid
       console.log('Validator: Errors: ', util.inspect(errors.array()));
     }
-
     res.render('index', Object.assign({}, req.session, { errors: errors.array() }));
   });
 });
-
+// if word is guess display You did it!
 function hasWon(letters) {
   return !letters.map(function(letterObj) {
     return letterObj.guessed;
   }).includes(false)
 }
-
+// check to see if user guesses the word
 function gameIsAfoot(letters) {
   return letters.map(function(letterObj) {
     return letterObj.guessed;
   }).includes(false)
 }
-
 // if play again button is pressed page reloads with: new word, letters guessed array [], gamplay is true, new gameplay
 app.post('/reset', (req, res) => {
   initializeSession(req.session);
@@ -173,14 +171,6 @@ function initializeWord(word) {
   });
   return lettersArray;
 }
-
-// rerender home with usermessage and updated game play board
-// user message: _ is in the mystery word
-// update guessed value
-// if guess does not match letter in mystery word rerender page
-// TODO: subtract 1 from guesses count
-// TODO: check to see if user guesses the word
-// TODO: if word is guess display You did it!
 
 app.listen(3000, function () {
   console.log('🍸  Party at http://localhost:3000...');
