@@ -1,7 +1,8 @@
 module.exports = {
   title: 'Mystery Word',
-  guessesCount: 8,
-  newWord: '',
+  easyModeMaxGuesses: 8,
+  badGuesses: 0,
+  newWord: [],
   wordLength: 0,
   guessedLetters: [],
   moreGuesses: true,

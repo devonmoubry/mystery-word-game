@@ -14,14 +14,19 @@
   <body style="margin: 0 20px;">
     <h1>{{title}}</h1>
     <div style="margin:20px 0;" class="mysteryWord">
-      {{#newWord}}
-        <span>_</span>
-      {{/newWord}}
+        {{#newWord}}
+          {{#guessed}}
+          <span>{{letter}}</span>
+          {{/guessed}}
+          {{^guessed}}
+          <span>_</span>
+          {{/guessed}}
+        {{/newWord}}
     </div>
     {{#gamePlay}}
       <div class="guessesCount">
         {{#moreGuesses}}
-          <span>You have {{guessesCount}} guesses left.</span>
+          <span>You have made {{badGuesses}} bad guesses out of {{easyModeMaxGuesses}}.</span>
         {{/moreGuesses}}
 
         {{^moreGuesses}}

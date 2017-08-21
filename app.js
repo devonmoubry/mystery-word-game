@@ -82,27 +82,46 @@ function initializeSessionIfEmpty(session) {
 }
 
 app.get('/', (req, res) => {
-  // store new word in a session
-  req.session.newWord = getRandomWord(easyWords);
-  // // count number of characters in word
-  req.session.wordLength = req.session.newWord.length;
-  // // TODO: create array with underscores the same length as random word?
-  req.session.newWord = req.session.newWord.split('');
-
+  //store new word in session
+  // create array of objects with char
+  req.session.newWord = initializeWord(getRandomWord(easyWords))
+  console.log('what is newWord', req.session.newWord);
   res.render('index', req.session);
 })
 
 app.post('/guess', (req, res) => {
+  // Render validation error messages
   req.checkBody('guessInput', 'You must make a guess.').notEmpty();
   req.checkBody('guessInput', 'Your guess must be a letter.').isAlpha();
   req.checkBody('guessInput', 'Your guess must be exactly one letter.').isByteLength({ min: 1, max: 1 });
+  // check to see if guess matches letter in guessed array
+  // if guess matches letter in guessed array display message
   req.checkBody('guessInput', 'You already guessed that').hasNotBeenGuessed(req.session.guessedLetters);
   req.getValidationResult().then(function(errors) {
+    // if input is valid...
     if (errors.isEmpty()) {
       console.log('Validator: No errors.');
       req.session.currentGuess = req.body.guessInput;
       req.session.guessedLetters.push(req.session.currentGuess);
+
+      // check to see if input matches letter in session
+      // if guess matches letter in mystery word display user message
+      let badGuess = true;
+      console.log('before map',req.session.newWord);
+      req.session.newWord = req.session.newWord.map((letterObj) => {
+        if (letterObj.letter == req.session.currentGuess) {
+          letterObj.guessed = true;
+          badGuess = false;
+        }
+        return letterObj;
+      });
+      console.log('after map',req.session.newWord);
+      if (badGuess == true) {
+        req.session.badGuesses++;
+      }
+
     } else {
+      // display error messages: input is invalid
       console.log('Validator: Errors: ', util.inspect(errors.array()));
     }
 
@@ -110,19 +129,20 @@ app.post('/guess', (req, res) => {
   });
 });
 
-// TODO: Render validation error messages
-// TODO: display error message: input is invalid, please try again. your guess must be 1 letter.
-// TODO: if input is valid...
-// TODO: check to see if guess matches letter in guessed array
-// TODO: if guess matches letter in guessed array display message: you already guess that, please try again.
-// TODO: check to see if input matches letter in session
-// TODO: if guess matches letter in mystery word display user message
-// TODO: rerender home with usermessage and updated game play board
-// TODO: user message: _ is in the mystery word
-// TODO: letter added to guessed array?
-// TODO: if guess does not match letter in mystery word rerender page
+function initializeWord(word) {
+  let lettersArray = [];
+  word.split('').forEach((letter) => {
+    lettersArray.push( { letter: letter, guessed: false } )
+  });
+  return lettersArray;
+}
+
+// rerender home with usermessage and updated game play board
+// user message: _ is in the mystery word
+// update guessed value
+// if guess does not match letter in mystery word rerender page
 // TODO: subtract 1 from guesses count
-// TODO: add letter to guessed array
+// add letter to guessed array
 // TODO: check to see if user guesses the word
 // TODO: if word is guess display You did it!
 // TODO: check to see if user ran out of turns
