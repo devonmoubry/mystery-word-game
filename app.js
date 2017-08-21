@@ -106,8 +106,8 @@ app.post('/guess', (req, res) => {
     if (errors.isEmpty()) {
       console.log('Validator: No errors.');
       req.session.currentGuess = req.body.guessInput;
+      // add letter to guessed array
       req.session.guessedLetters.push(req.session.currentGuess);
-
       // check to see if input matches letter in session
       // if guess matches letter in mystery word display user message
       let badGuess = true;
@@ -123,12 +123,21 @@ app.post('/guess', (req, res) => {
       if (badGuess == true) {
         req.session.badGuesses++;
       }
-
+      // check to see if user ran out of turns
       if (req.session.easyModeMaxGuesses == req.session.badGuesses) {
+        // if user ran out of turns display You ran out of guesses.
         req.session.moreGuesses = false;
+        // display full word from session
+        // tell computer gameplay = false
+        // if gameplay is false display button with message do you want to play again?
         req.session.gamePlay = false;
         req.session.win = false;
       }
+
+      req.session.win = hasWon(req.session.newWord);
+      req.session.gamePlay = gameIsAfoot(req.session.newWord);
+
+      console.log('Win', req.session.win);
 
     } else {
       // display error messages: input is invalid
@@ -139,6 +148,19 @@ app.post('/guess', (req, res) => {
   });
 });
 
+function hasWon(letters) {
+  return !letters.map(function(letterObj) {
+    return letterObj.guessed;
+  }).includes(false)
+}
+
+function gameIsAfoot(letters) {
+  return letters.map(function(letterObj) {
+    return letterObj.guessed;
+  }).includes(false)
+}
+
+// if play again button is pressed page reloads with: new word, letters guessed array [], gamplay is true, new gameplay
 app.post('/reset', (req, res) => {
   initializeSession(req.session);
   res.redirect('/');
@@ -157,15 +179,8 @@ function initializeWord(word) {
 // update guessed value
 // if guess does not match letter in mystery word rerender page
 // TODO: subtract 1 from guesses count
-// add letter to guessed array
 // TODO: check to see if user guesses the word
 // TODO: if word is guess display You did it!
-// TODO: check to see if user ran out of turns
-// TODO: if user ran out of turns display You ran out of guesses.
-// TODO: display full word from session
-// TODO: tell computer gameplay = false
-// TODO: if gameplay is false display button with message do you want to play again?
-// TODO: if play again button is pressed page reloads with: new word, guess count 8, letters guessed array [], gamplay is true, new gameplay
 
 app.listen(3000, function () {
   console.log('🍸  Party at http://localhost:3000...');
